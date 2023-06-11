@@ -58,6 +58,7 @@ public class ArgsParser {
     public static final String[] VERSION_FLAGS = new String[] {"--version", "-V"};
     public static final String[] LAST_MODIFIED_DATE_FLAGS = new String[] {"--last-modified-date", "-l"};
     public static final String[] FIND_PREVIOUS_AUTHORS_FLAGS = new String[] {"--find-previous-authors", "-F"};
+    public static final String[] JSON_PRINT_MODE_FLAGS = new String[] {"--use-json-prettier-printing", "-j"};
 
     public static final String[] CLONING_THREADS_FLAG = new String[] {"--cloning-threads"};
     public static final String[] ANALYSIS_THREADS_FLAG = new String[] {"--analysis-threads"};
@@ -105,6 +106,12 @@ public class ArgsParser {
                 .addArgumentGroup(MESSAGE_HEADER_TESTING);
 
         // Boolean flags
+
+        parser.addArgument(JSON_PRINT_MODE_FLAGS)
+                .dest(JSON_PRINT_MODE_FLAGS[0])
+                .action(Arguments.storeTrue())
+                .help("A flag to make the JSON print prettier.");
+
         parser.addArgument(HELP_FLAGS)
                 .help("Show help message.")
                 .action(new HelpArgumentAction());
@@ -278,6 +285,8 @@ public class ArgsParser {
             int numCloningThreads = results.get(CLONING_THREADS_FLAG[0]);
             int numAnalysisThreads = results.get(ANALYSIS_THREADS_FLAG[0]);
 
+            boolean isJsonPrettierUsed = results.get(JSON_PRINT_MODE_FLAGS[0]);
+
             CliArguments.Builder cliArgumentsBuilder = new CliArguments.Builder()
                     .configFolderPath(configFolderPath)
                     .reportDirectoryPath(reportFolderPath)
@@ -293,7 +302,8 @@ public class ArgsParser {
                     .isFindingPreviousAuthorsPerformed(shouldFindPreviousAuthors)
                     .numCloningThreads(numCloningThreads)
                     .numAnalysisThreads(numAnalysisThreads)
-                    .isTestMode(isTestMode);
+                    .isTestMode(isTestMode)
+                    .isJsonPrettierUsed(isJsonPrettierUsed);
 
             LogsManager.setLogFolderLocation(outputFolderPath);
 
