@@ -46,23 +46,24 @@ public class PeriodArgumentType implements ArgumentType<Optional<Integer>> {
      * Parses a {@code isDateWeekOrYear} String and returns an {@link Integer} representing the multiplier for the
      * type of period.
      *
+     * @throws ParseException if period identifier is invalid.
      */
     private static int getMultiplier(String isDateWeekOrYear) throws ParseException {
         int multiplier;
         switch (isDateWeekOrYear) {
-            case (DAY_IDENTIFIER):
-                multiplier = NUMBER_OF_DAYS_IN_A_DAY;
-                break;
-            case (WEEK_IDENTIFIER):
-                multiplier = NUMBER_OF_DAYS_IN_A_WEEK;
-                break;
-            case (YEAR_IDENTIFIER):
-                multiplier = NUMBER_OF_DAYS_IN_A_YEAR;
-                break;
-            default:
-                // should not reach here
-                throw new ParseException(String.format(PARSE_EXCEPTION_MESSAGE_NUMBER_UNRECOGNISED_IDENTIFIER,
-                        isDateWeekOrYear));
+        case (DAY_IDENTIFIER):
+            multiplier = NUMBER_OF_DAYS_IN_A_DAY;
+            break;
+        case (WEEK_IDENTIFIER):
+            multiplier = NUMBER_OF_DAYS_IN_A_WEEK;
+            break;
+        case (YEAR_IDENTIFIER):
+            multiplier = NUMBER_OF_DAYS_IN_A_YEAR;
+            break;
+        default:
+            // should not reach here
+            throw new ParseException(String.format(PARSE_EXCEPTION_MESSAGE_NUMBER_UNRECOGNISED_IDENTIFIER,
+                    isDateWeekOrYear));
         }
         return multiplier;
     }
