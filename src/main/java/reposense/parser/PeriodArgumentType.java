@@ -19,7 +19,16 @@ public class PeriodArgumentType implements ArgumentType<Optional<Integer>> {
             "Invalid format. Period must be greater than 0.";
     private static final String PARSE_EXCEPTION_MESSAGE_NUMBER_TOO_LARGE =
             "Invalid format. Input number may be too large.";
-    private static final Pattern PERIOD_PATTERN = Pattern.compile("[0-9]+[dw]");
+    private static final Pattern PERIOD_PATTERN = Pattern.compile("[0-9]+[dwy]");
+
+    private static final String DAY_IDENTIFIER = "d";
+    private static final String WEEK_IDENTIFIER = "w";
+    private static final String YEAR_IDENTIFIER = "y";
+
+    private static final int NUMBER_OF_DAYS_IN_A_DAY = 1;
+    private static final int NUMBER_OF_DAYS_IN_A_WEEK = 7;
+    private static final int NUMBER_OF_DAYS_IN_A_YEAR = 365;
+
 
     @Override
     public Optional<Integer> convert(ArgumentParser parser, Argument arg, String value) throws ArgumentParserException {
@@ -40,7 +49,23 @@ public class PeriodArgumentType implements ArgumentType<Optional<Integer>> {
             throw new ParseException(String.format(PARSE_EXCEPTION_MESSAGE_NOT_IN_NUMERIC, period));
         }
 
-        int multiplier = period.substring(period.length() - 1).equals("d") ? 1 : 7;
+        String isDateWeekOrYear = period.substring(period.length() - 1);
+        int multiplier = 0;
+        switch (isDateWeekOrYear) {
+        case (DAY_IDENTIFIER):
+            multiplier = NUMBER_OF_DAYS_IN_A_DAY;
+            break;
+        case (WEEK_IDENTIFIER):
+            multiplier = NUMBER_OF_DAYS_IN_A_WEEK;
+            break;
+        case (YEAR_IDENTIFIER):
+            multiplier = NUMBER_OF_DAYS_IN_A_YEAR;
+            break;
+        default:
+            // should not reach here
+            break;
+
+        }
 
         try {
             int convertedValue = Integer.parseInt(period.substring(0, period.length() - 1)) * multiplier;
