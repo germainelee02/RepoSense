@@ -61,6 +61,8 @@ public class FileUtil {
     private static final String MESSAGE_FAIL_TO_COPY_ASSETS =
             "Exception occurred while attempting to copy custom assets.";
 
+    private static boolean isPrettierPrintingUsed = false;
+
     /**
      * Zips all files of type {@code fileTypes} that are in the directory {@code pathsToZip} into a single file and
      * output it to {@code sourceAndOutputPath}.
@@ -68,6 +70,7 @@ public class FileUtil {
     public static void zipFoldersAndFiles(List<Path> pathsToZip, Path sourceAndOutputPath, String... fileTypes) {
         zipFoldersAndFiles(pathsToZip, sourceAndOutputPath, sourceAndOutputPath, fileTypes);
     }
+
 
     /**
      * Zips all files listed in {@code pathsToZip} of type {@code fileTypes} located in the directory
@@ -96,6 +99,16 @@ public class FileUtil {
         }
     }
 
+
+    /**
+     * Sets the printing mode if it is prettier or not.
+     *
+     * @param isPrettierPrinting boolean if prettier printing is used or not
+     */
+    public static void setPrettierPrintingMode(boolean isPrettierPrinting) {
+        isPrettierPrintingUsed = isPrettierPrinting;
+    }
+
     /**
      * Writes the JSON file representing the {@code object} at the given {@code path}.
      *
@@ -103,16 +116,23 @@ public class FileUtil {
      * was an error while writing the JSON file.
      */
     public static Optional<Path> writeJsonFile(Object object, String path) {
-        Gson gson = new GsonBuilder()
+        GsonBuilder gsonBuilder = new GsonBuilder()
                 .registerTypeAdapter(LocalDateTime.class, (JsonSerializer<LocalDateTime>) (date, typeOfSrc, context)
                         -> new JsonPrimitive(date.format(DateTimeFormatter.ofPattern(GITHUB_API_DATE_FORMAT))))
                 .registerTypeAdapter(FileType.class, new FileType.FileTypeSerializer())
                 .registerTypeAdapter(ZoneId.class, (JsonSerializer<ZoneId>) (zoneId, typeOfSrc, context)
-                        -> new JsonPrimitive(zoneId.toString()))
-                .create();
+                        -> new JsonPrimitive(zoneId.toString()));
 
         // Gson serializer from:
         // https://stackoverflow.com/questions/39192945/serialize-java-8-localdate-as-yyyy-mm-dd-with-gson
+
+        Gson gson;
+        if (isPrettierPrintingUsed) {
+            gson = gsonBuilder.setPrettyPrinting().create();
+        } else {
+            gson = gsonBuilder.create();
+
+        }
 
         String result = gson.toJson(object);
 

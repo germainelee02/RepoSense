@@ -69,6 +69,7 @@ public class RepoSense {
             RepoConfiguration.setIsFindingPreviousAuthorsPerformedToRepoConfigs(configs,
                     cliArguments.isFindingPreviousAuthorsPerformed());
 
+
             if (RepoConfiguration.isAnyRepoFindingPreviousAuthors(configs)
                     && !GitVersion.isGitVersionSufficientForFindingPreviousAuthors()) {
                 logger.warning(FINDING_PREVIOUS_AUTHORS_INVALID_VERSION_WARNING_MESSAGE);
@@ -79,6 +80,10 @@ public class RepoSense {
             if (globalGitConfig.size() != 0) {
                 GitConfig.setGlobalGitLfsConfig(GitConfig.SKIP_SMUDGE_CONFIG_SETTINGS);
             }
+
+
+            FileUtil.setPrettierPrintingMode(cliArguments.getIsJsonPrettierUsed());
+
 
             ReportGenerator reportGenerator = new ReportGenerator();
             List<Path> reportFoldersAndFiles = reportGenerator.generateReposReport(configs,
@@ -92,6 +97,7 @@ public class RepoSense {
 
             FileUtil.zipFoldersAndFiles(reportFoldersAndFiles, cliArguments.getOutputFilePath().toAbsolutePath(),
                     ".json");
+            System.out.println(cliArguments.getIsJsonPrettierUsed());
 
             // Set back to user's initial global git lfs config
             GitConfig.setGlobalGitLfsConfig(globalGitConfig);

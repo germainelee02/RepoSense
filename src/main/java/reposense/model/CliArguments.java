@@ -26,6 +26,7 @@ public class CliArguments {
     private final boolean isSinceDateProvided;
     private final boolean isUntilDateProvided;
     private final List<FileType> formats;
+    private final boolean isJsonPrettierUsed;
     private final boolean isLastModifiedDateIncluded;
     private final boolean isShallowCloningPerformed;
     private final boolean isAutomaticallyLaunching;
@@ -37,6 +38,7 @@ public class CliArguments {
     private final boolean isFindingPreviousAuthorsPerformed;
     private boolean isTestMode = ArgsParser.DEFAULT_IS_TEST_MODE;
     private boolean isFreshClonePerformed = ArgsParser.DEFAULT_SHOULD_FRESH_CLONE;
+
 
 
     private List<String> locations;
@@ -79,6 +81,11 @@ public class CliArguments {
         this.groupConfigFilePath = builder.groupConfigFilePath;
         this.reportConfigFilePath = builder.reportConfigFilePath;
         this.reportConfiguration = builder.reportConfiguration;
+        this.isJsonPrettierUsed = builder.isJsonPrettierUsed;
+    }
+
+    public boolean getIsJsonPrettierUsed() {
+        return isJsonPrettierUsed;
     }
 
     public ZoneId getZoneId() {
@@ -226,7 +233,8 @@ public class CliArguments {
                 && Objects.equals(this.repoConfigFilePath, otherCliArguments.repoConfigFilePath)
                 && Objects.equals(this.authorConfigFilePath, otherCliArguments.authorConfigFilePath)
                 && Objects.equals(this.groupConfigFilePath, otherCliArguments.groupConfigFilePath)
-                && Objects.equals(this.reportConfigFilePath, otherCliArguments.reportConfigFilePath);
+                && Objects.equals(this.reportConfigFilePath, otherCliArguments.reportConfigFilePath)
+                && Objects.equals(this.isJsonPrettierUsed, otherCliArguments.isJsonPrettierUsed);
     }
 
     /**
@@ -260,6 +268,8 @@ public class CliArguments {
         private Path groupConfigFilePath;
         private Path reportConfigFilePath;
         private ReportConfiguration reportConfiguration;
+
+        private boolean isJsonPrettierUsed;
 
         public Builder() {
         }
@@ -385,6 +395,17 @@ public class CliArguments {
         }
 
         /**
+         * Checks if JSON is formatted to be prettier.
+         *
+         * @param isJsonPrettierUsed the boolean if json is supposed to be prettier
+         * @return the builder with jsonPrettierUsed set
+         */
+        public Builder isJsonPrettierUsed(boolean isJsonPrettierUsed) {
+            this.isJsonPrettierUsed = isJsonPrettierUsed;
+            return this;
+        }
+
+        /**
          * Adds the {@code numCloningThreads} to CliArguments.
          *
          * @param numCloningThreads The number of cloning threads.
@@ -453,6 +474,7 @@ public class CliArguments {
             this.locations = locations;
             return this;
         }
+
 
         /**
          * Adds the {@code isViewModeOnly} to CliArguments.
